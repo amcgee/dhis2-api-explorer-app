@@ -18,8 +18,13 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@dhis2/app-runtime": "^3.12.0-alpha.1",
+    "@dhis2/app-runtime": "^3.12.0",
     "@dhis2/ui": "^10.0.0-alpha.8",
-    "@tanstack/react-query": "^5.62.0"
+    "@tanstack/react-query": "^5.62.0",
+    "post-robot": "^8.0.32",
+    "quickjs-emscripten": "^0.31.0"
+  },
+  "resolutions": {
+    "@dhis2/ui": "^10.0.0-alpha.8"
   }
 }

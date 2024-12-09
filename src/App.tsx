@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Button, Input } from '@dhis2/ui'
 import styles from "./App.module.css"
 import { useConfig } from '@dhis2/app-runtime'
+import { ScriptSandbox } from './components/ScriptSandbox'
 
 const client = new QueryClient({ defaultOptions: { queries: { retry: false  } } })
 
@@ -38,6 +39,7 @@ const MyApp: FC = () => {
             <div className="results">
                 { path && <ConnectedGenericDataTable url={path} />}
             </div>
+            {/* <ScriptSandbox script="console.log('SCRIPT!')" /> */}
         </div>
     </QueryClientProvider>
 }

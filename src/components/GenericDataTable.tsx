@@ -3,6 +3,7 @@ import { useDataEngine } from "@dhis2/app-runtime"
 import { useQuery } from "@tanstack/react-query"
 import { DataTable, DataTableBody, DataTableCell, DataTableColumnHeader, DataTableFoot, DataTableHead, DataTableRow, Pagination } from '@dhis2/ui'
 import styles from '../App.module.css'
+import { getPropertyByPath, parseColumns } from '../lib/fieldHelpers'
 
 export const GenericDataTable = ({ pager, data, columns, setPage }) => {
     return <DataTable className={styles.data_table}>
@@ -13,7 +14,7 @@ export const GenericDataTable = ({ pager, data, columns, setPage }) => {
         </DataTableHead>
         <DataTableBody>
             {data.map(row => <DataTableRow key={row.id}>
-                {columns.map(column => <DataTableCell key={column}>{JSON.stringify(row[column])}</DataTableCell>)}
+                {columns.map(column => <DataTableCell key={column}>{JSON.stringify(getPropertyByPath(row, column))}</DataTableCell>)}
             </DataTableRow>)}
         </DataTableBody>
         <DataTableFoot>
@@ -59,10 +60,19 @@ export const ConnectedGenericDataTable = ({ url }: { url: string }) => {
         })
     })
 
-    const firstObjectKeys = Object.keys(data?.main?.[resource]?.[0] || {})
-    console.log(firstObjectKeys)
+    const columns = useMemo(() => {
+        try {
+            const firstObject = data?.main?.[resource]?.[0] || {}
+            return params.fields ? parseColumns(params.fields, firstObject) : defaultFields
+        } catch (e) {
+            return e
+        }
+    }, [params.fields, data])
 
-    const columns = params.fields === '*' || params.fields?.startsWith(':') ? firstObjectKeys : params.fields?.split(',') || ['id', 'displayName']
+    if (columns instanceof Error) {
+        return <p>Fields parse error: {columns.message}</p>
+    }
+
     return <>
         {isLoading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
